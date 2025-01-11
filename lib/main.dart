@@ -14,7 +14,6 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
 
     );
-    //this is new change
-    //this is new chnage
+
   }
 }
