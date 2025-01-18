@@ -2,18 +2,25 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:plant_app/OnboardingScreen.dart';
 
-
 class SplashScreen extends StatefulWidget {
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
   @override
   void initState() {
     super.initState();
 
-    // Delayed navigation after 5 seconds
+    // Initialize AnimationController for rotation
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 3), // Same as the splash screen duration
+    )..repeat(); // Repeat animation indefinitely
+
+    // Delayed navigation after 3 seconds
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
@@ -25,23 +32,38 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose(); // Dispose controller to free up resources
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Color(0xFF014C07), // Updated to fully opaque color
+        color: Color(0xFF014C07), // Fully opaque green background
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Add an icon instead of an image
-              Icon(
-                Icons.eco, // Plant leaf icon
-                color: Colors.greenAccent,
-                size: 100, // Adjust icon size
+              // Rotating icon
+              AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Transform.rotate(
+                    angle: _controller.value * 2 * 3.1416, // Full rotation
+                    child: child,
+                  );
+                },
+                child: Icon(
+                  Icons.eco, // Plant leaf icon
+                  color: Colors.greenAccent,
+                  size: 100, // Adjust icon size
+                ),
               ),
               SizedBox(height: 20), // Spacing between icon and text
 
-              // Add styled text
+              // Styled text
               RichText(
                 text: TextSpan(
                   children: [
